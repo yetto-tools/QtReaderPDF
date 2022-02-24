@@ -297,6 +297,7 @@ class MainWindow(QMainWindow):
             myCanvas.save()
             tempfile = temp+"/"+self.file_selected.fileName()
             self.webView.setUrl(QUrl(f'file:///{tempfile}'))
+            self.webView.setWindowTitle(self.file_selected.filePath())
             self.webView.setPage(self.webView.page())
 
         except TypeError as e:
