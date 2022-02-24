@@ -210,8 +210,6 @@ class MainWindow(QMainWindow):
 
     def on_clicked(self, index):
         self.file_selected = self.dirModel.fileInfo(index)
-        filename = self.file_selected.fileName()
-        path = self.file_selected.filePath()
         if not self.file_selected.isDir():
             self.webView.setUrl(QUrl(f"file:///{self.file_selected.absoluteFilePath()}"))
 
