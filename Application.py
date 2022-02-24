@@ -1,12 +1,9 @@
-from ast import Try
-import sys
-from tkinter import W
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtPrintSupport import QPrintDialog, QPrinter, QPrintPreviewDialog
-
+import sys
 
 
 ################################################
@@ -22,9 +19,9 @@ from io import StringIO
 import re
 
 
-# ---------------------------------------- 
+################################################ 
 #  dependens generate new formar report
-# ---------------------------------------- 
+################################################ 
 #
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
@@ -33,9 +30,9 @@ from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.fonts import addMapping
 
-# ---------------------------------------- 
+################################################ 
 #  Register Font Family Arial 
-# ---------------------------------------- 
+################################################ 
 #
 registerFont(TTFont('Arial', 'arial.ttf'))
 registerFont(TTFont('Arial-Bold', 'arialbd.ttf'))
@@ -141,7 +138,7 @@ class MainWindow(QMainWindow):
 
         # Preferencias
         self.preferenceAction = QAction(QIcon('./Resource/icons/printer--pencil.png'), "Pre&ferencias...", self)
-        self.preferenceAction.setShortcut('Ctrl+Alt+P')
+        self.preferenceAction.setShortcut('Ctrl+Alt+F')
         self.preferenceAction.triggered.connect(self.preference)
 
         self.exitAction.triggered.connect(self.menu_exit)
@@ -219,9 +216,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def convertFormat(self):
-        if self.pdfdata == None:
-            print("none")
-        else:
+        if not self.file_selected == None:
             #self.webView.page():
             with open(self.file_selected, 'rb') as file:
                 rsrcmgr = PDFResourceManager()
@@ -242,29 +237,33 @@ class MainWindow(QMainWindow):
                         lista =  [item.strip() for item in data[0] if len(item)>0]
                 
                 self.pdfdata = lista
-        
-        list_fields = {'fecha': '', 'monto':'', 'nombre' : '', 'monto_en_letras': '', 'no_negociable' : '','otros':''}
-        for field in self.pdfdata:
-            if re.findall(r'[Guatemala,]+.[0-3]{1}[0-9]{1}.[de].*.[de].[0-9]{4}', field):
-                list_fields['fecha'] = field
 
-            elif re.findall(r'[0-9][,0-9]*\.[0-9]{2}', field):
-                list_fields['monto'] = field
+            list_fields = {'fecha': '', 'monto':'', 'nombre' : '', 'monto_en_letras': '', 'no_negociable' : '','otros':''}
 
-            elif re.findall(r'[A-Z ]+[0-9]+\/100', field):
-                list_fields['monto_en_letras'] = field
+            # sort filds 
+            for field in self.pdfdata:
+                if re.findall(r'[Guatemala,]+.[0-3]{1}[0-9]{1}.[de].*.[de].[0-9]{4}', field):
+                    list_fields['fecha'] = field
+
+                elif re.findall(r'[0-9][,0-9]*\.[0-9]{2}', field):
+                    list_fields['monto'] = field
+
+                elif re.findall(r'[A-Z ]+[0-9]+\/100', field):
+                    list_fields['monto_en_letras'] = field
             
-            # elif re.findall(r'^PANADEROS*', field) or re.findall(r'^CUDILLERO*', field):
-            # continue
-            elif re.findall(r'[\*]{3}.*.[\*]{3}', field):
-                list_fields['no_negociable'] = field
-            else:
-                list_fields['otros'] == field
-                if list_fields['nombre'] == '':
-                    list_fields['nombre'] = field
-            
+                    # elif re.findall(r'^PANADEROS*', field) or re.findall(r'^CUDILLERO*', field):
+                    # continue
+                elif re.findall(r'[\*]{3}.*.[\*]{3}', field):
+                    list_fields['no_negociable'] = field
+                else:
+                    list_fields['otros'] == field
+                    if list_fields['nombre'] == '':
+                        list_fields['nombre'] = field
+
             self.pdfdata = list_fields
             self.formatPDFCheck()
+        else:
+            QMessageBox.question(self, 'MessageBox', "No hay un Archivo Seleccionado", QMessageBox.Ok)
 
 
 
@@ -300,14 +299,9 @@ class MainWindow(QMainWindow):
             tempfile = temp+"/"+self.file_selected.fileName()
             self.webView.setUrl(QUrl(f'file:///{tempfile}'))
             self.webView.setPage(self.webView.page())
-            print(tempfile)
-        except TypeError:
-            msgbox = QMessageBox()
-            msgbox.setIcon(QMessageBox.information)
-            msgbox.setText("Primero Selecciona un Archivo Valido para convertir")
-            msgbox.setInformativeText("This is additional information")
-            msgbox.setDetailedText("The details are as follows:")
-            msgbox.setStandardButtons(QMessageBox.Ok)
+
+        except TypeError as e:
+            ret = QMessageBox.question(self, 'Informacion', "e", QMessageBox.OK)
 
 
     @pyqtSlot()
@@ -320,7 +314,8 @@ class MainWindow(QMainWindow):
         if check:           
             self.webView.setUrl(QUrl(f'file:///{path}'))
             self.webView.setPage(self.webView.page())
-            
+            self.file_selected = QFileInfo(path)
+
 
     @pyqtSlot()
     def open_folder_dialog(self):
@@ -334,7 +329,8 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def preference(self):
-        print("print")
+        pass
+
 
     @pyqtSlot()
     def menu_exit(self):
@@ -366,7 +362,6 @@ class MainWindow(QMainWindow):
         self.setting_window.setValue("posX", self.x())
         self.setting_window.setValue("posY", self.y())
         self.setting_variables.setValue('Path', self.dirwork)
-        print(self.dirwork)
 
         #self.setting_variables.setValue('Path', QStandardPaths.writableLocation(QStandardPaths.HomeLocation))
 
