@@ -1,5 +1,1 @@
 # QtReaderPDF
-
-# QtReaderPDF
-# QtReaderPDF
-"# QtReaderPDF" 
