@@ -1,3 +1,4 @@
+from site import venv
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -199,6 +200,7 @@ class MainWindow(QMainWindow):
             self.move(x,y)
         except:
             pass
+
         if h is None or w is None or self.dirwork is None or x is None or y is None:
             self.resize(800, 640)
             self.dirwork =  QStandardPaths.writableLocation(QStandardPaths.HomeLocation)
@@ -212,7 +214,6 @@ class MainWindow(QMainWindow):
         path = self.file_selected.filePath()
         if not self.file_selected.isDir():
             self.webView.setUrl(QUrl(f"file:///{self.file_selected.absoluteFilePath()}"))
-
 
     @pyqtSlot()
     def convertFormat(self):
@@ -263,7 +264,7 @@ class MainWindow(QMainWindow):
             self.pdfdata = list_fields
             self.formatPDFCheck()
         else:
-            QMessageBox.question(self, 'MessageBox', "No hay un Archivo Seleccionado", QMessageBox.Ok)
+            QMessageBox.question(self, 'Información', "No hay un Archivo Seleccionado\t", QMessageBox.Ok)
 
 
 
@@ -271,7 +272,7 @@ class MainWindow(QMainWindow):
         h,l = 215.9*mm,279.4*mm
         h_checkbi = 68*mm
         l_checkbi = 168*mm
-        ancho,largo = letter
+
 
         temp = QStandardPaths.writableLocation(QStandardPaths.TempLocation)
         paper = letter
