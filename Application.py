@@ -138,7 +138,7 @@ class MainWindow(QMainWindow):
 
         # Preferencias
         self.preferenceAction = QAction(QIcon('./Resource/icons/printer--pencil.png'), "Pre&ferencias...", self)
-        self.preferenceAction.setShortcut('Ctrl+Alt+P')
+        self.preferenceAction.setShortcut('Ctrl+Alt+F')
         self.preferenceAction.triggered.connect(self.preference)
 
         self.exitAction.triggered.connect(self.menu_exit)
