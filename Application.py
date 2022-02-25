@@ -1,4 +1,3 @@
-from site import venv
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -139,7 +138,7 @@ class MainWindow(QMainWindow):
 
         # Preferencias
         self.preferenceAction = QAction(QIcon('./Resource/icons/printer--pencil.png'), "Pre&ferencias...", self)
-        self.preferenceAction.setShortcut('Ctrl+Alt+F')
+        self.preferenceAction.setShortcut('Ctrl+Alt+P')
         self.preferenceAction.triggered.connect(self.preference)
 
         self.exitAction.triggered.connect(self.menu_exit)
@@ -200,7 +199,6 @@ class MainWindow(QMainWindow):
             self.move(x,y)
         except:
             pass
-
         if h is None or w is None or self.dirwork is None or x is None or y is None:
             self.resize(800, 640)
             self.dirwork =  QStandardPaths.writableLocation(QStandardPaths.HomeLocation)
@@ -210,13 +208,22 @@ class MainWindow(QMainWindow):
 
     def on_clicked(self, index):
         self.file_selected = self.dirModel.fileInfo(index)
+        filename = self.file_selected.fileName()
+        path = self.file_selected.filePath()
         if not self.file_selected.isDir():
             self.webView.setUrl(QUrl(f"file:///{self.file_selected.absoluteFilePath()}"))
 
+
     @pyqtSlot()
     def convertFormat(self):
+        
+        # if self.file_selected == None:
+        #     self.file_selected  = QFileInfo.
+
         if not self.file_selected == None:
             #self.webView.page():
+            print("QFILEINFO: ", self.file_selected)
+            print(self.webView.url().toLocalFile)
             with open(self.file_selected, 'rb') as file:
                 rsrcmgr = PDFResourceManager()
                 retstr = StringIO()
@@ -261,8 +268,6 @@ class MainWindow(QMainWindow):
 
             self.pdfdata = list_fields
             self.formatPDFCheck()
-        else:
-            QMessageBox.question(self, 'Información', "No hay un Archivo Seleccionado\t", QMessageBox.Ok)
 
 
 
@@ -270,7 +275,7 @@ class MainWindow(QMainWindow):
         h,l = 215.9*mm,279.4*mm
         h_checkbi = 68*mm
         l_checkbi = 168*mm
-
+        ancho,largo = letter
 
         temp = QStandardPaths.writableLocation(QStandardPaths.TempLocation)
         paper = letter
@@ -297,11 +302,15 @@ class MainWindow(QMainWindow):
             myCanvas.save()
             tempfile = temp+"/"+self.file_selected.fileName()
             self.webView.setUrl(QUrl(f'file:///{tempfile}'))
-            self.webView.setWindowTitle(self.file_selected.filePath())
             self.webView.setPage(self.webView.page())
 
-        except TypeError as e:
-            ret = QMessageBox.question(self, 'Informacion', "e", QMessageBox.OK)
+        except TypeError:
+            msgbox = QMessageBox()
+            msgbox.setIcon(QMessageBox.information)
+            msgbox.setText("Primero Selecciona un Archivo Valido para convertir")
+            msgbox.setInformativeText("This is additional information")
+            msgbox.setDetailedText("The details are as follows:")
+            msgbox.setStandardButtons(QMessageBox.Ok)
 
 
     @pyqtSlot()
@@ -314,7 +323,7 @@ class MainWindow(QMainWindow):
         if check:           
             self.webView.setUrl(QUrl(f'file:///{path}'))
             self.webView.setPage(self.webView.page())
-            self.file_selected = QFileInfo(path)
+            self.file_selected  = QFileInfo(path)
 
 
     @pyqtSlot()
@@ -329,8 +338,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def preference(self):
-        pass
-
+        print("print")
 
     @pyqtSlot()
     def menu_exit(self):
