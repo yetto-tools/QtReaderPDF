@@ -210,20 +210,15 @@ class MainWindow(QMainWindow):
         self.file_selected = self.dirModel.fileInfo(index)
         filename = self.file_selected.fileName()
         path = self.file_selected.filePath()
+        self.setWindowTitle(f'QtReaderPDF - [{path}]')
         if not self.file_selected.isDir():
             self.webView.setUrl(QUrl(f"file:///{self.file_selected.absoluteFilePath()}"))
+        
 
 
     @pyqtSlot()
     def convertFormat(self):
-        
-        # if self.file_selected == None:
-        #     self.file_selected  = QFileInfo.
-
         if not self.file_selected == None:
-            #self.webView.page():
-            print("QFILEINFO: ", self.file_selected)
-            print(self.webView.url().toLocalFile)
             with open(self.file_selected, 'rb') as file:
                 rsrcmgr = PDFResourceManager()
                 retstr = StringIO()
@@ -268,7 +263,10 @@ class MainWindow(QMainWindow):
 
             self.pdfdata = list_fields
             self.formatPDFCheck()
-
+            self.setWindowTitle(f'QtReaderPDF - [{self.file_selected.fileName()}]')
+        elif self.file_selected == None:
+            msgbox = QMessageBox()
+            msgbox.information(self, "Información", "Seleecione primero un archivo Valido\t", QMessageBox.Ok)
 
 
     def formatPDFCheck(self):
@@ -303,14 +301,9 @@ class MainWindow(QMainWindow):
             tempfile = temp+"/"+self.file_selected.fileName()
             self.webView.setUrl(QUrl(f'file:///{tempfile}'))
             self.webView.setPage(self.webView.page())
-
-        except TypeError:
-            msgbox = QMessageBox()
-            msgbox.setIcon(QMessageBox.information)
-            msgbox.setText("Primero Selecciona un Archivo Valido para convertir")
-            msgbox.setInformativeText("This is additional information")
-            msgbox.setDetailedText("The details are as follows:")
-            msgbox.setStandardButtons(QMessageBox.Ok)
+            self.webView.page().titleChanged(self.file_selected.absolutePath())
+        except Exception:
+            pass
 
 
     @pyqtSlot()
