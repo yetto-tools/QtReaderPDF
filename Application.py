@@ -73,7 +73,8 @@ class MainWindow(QMainWindow):
         self.treeview.setHeaderHidden(False)
         self.treeview.setSortingEnabled(True)
         self.treeview.setAlternatingRowColors(True)
-        self.treeview.sortByColumn(0, Qt.AscendingOrder)
+        #self.treeview.sortByColumn(0, Qt.AscendingOrder)
+        self.treeview.sortByColumn(3, Qt.DescendingOrder)
         self.setWindowTitle ('Qt Reader PDF')
         self.setWindowIcon(QIcon('./Resource/icons/adobe-acrobat--v2.ico'))
         ###### data convert ########
@@ -266,7 +267,7 @@ class MainWindow(QMainWindow):
             self.setWindowTitle(f'QtReaderPDF - [{self.file_selected.fileName()}]')
         elif self.file_selected == None:
             msgbox = QMessageBox()
-            msgbox.information(self, "Información", "Seleecione primero un archivo Valido\t", QMessageBox.Ok)
+            msgbox.information(self, "Información", "Seleccione Primero un Archivo Valido\t", QMessageBox.Ok)
 
 
     def formatPDFCheck(self):
@@ -301,7 +302,6 @@ class MainWindow(QMainWindow):
             tempfile = temp+"/"+self.file_selected.fileName()
             self.webView.setUrl(QUrl(f'file:///{tempfile}'))
             self.webView.setPage(self.webView.page())
-            self.webView.page().titleChanged(self.file_selected.absolutePath())
         except Exception:
             pass
 
@@ -325,6 +325,7 @@ class MainWindow(QMainWindow):
         path = QFileDialog.getExistingDirectory(self,"Abrir Archivo PDF para Visualizar", 
             QStandardPaths.writableLocation(QStandardPaths.DownloadLocation) )
         self.treeview.setRootIndex(self.dirModel.setRootPath(path))
+        #self.treeview.sortByColumn(3,Qt.DescendingOrder)
         self.treeview.sortByColumn(3,Qt.DescendingOrder)
         self.setting_variables.setValue('Path', path)
         self.dirwork = path
@@ -370,7 +371,9 @@ class MainWindow(QMainWindow):
 class configMenu(QDialog):
     def __init__(self):
         QDialog.__init__(self)
-
+        dlg = QDialog(self)
+        dlg.setWindowTitle("HELLO!")
+        dlg.exec()
 
 
 
