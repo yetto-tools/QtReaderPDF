@@ -104,6 +104,7 @@ class MainWindow(QMainWindow):
         self.webView.settings().setAttribute(QWebEngineSettings.SpatialNavigationEnabled, False)
         self.webView.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
         self.webView.settings().setAttribute(QWebEngineSettings.PdfViewerEnabled, True)
+        
 
         # Menu Bar
         self.menuBar = self.menuBar()
@@ -157,6 +158,9 @@ class MainWindow(QMainWindow):
 
         FormatMenu = QMenu("&Configuración", self)
         self.menuBar.addMenu(FormatMenu)
+        self.formatCheckAction = QAction(QIcon("./"), "Formato", self )
+        self.formatCheckAction.triggered.connect(self.configFormat)
+        FormatMenu.addAction(self.formatCheckAction)
 
 
         AboutMenu = QMenu("&Acerca", self)
@@ -214,8 +218,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f'QtReaderPDF - [{path}]')
         if not self.file_selected.isDir():
             self.webView.setUrl(QUrl(f"file:///{self.file_selected.absoluteFilePath()}"))
-        
-
 
     @pyqtSlot()
     def convertFormat(self):
@@ -233,26 +235,24 @@ class MainWindow(QMainWindow):
                 for pageNumber, page in enumerate(PDFPage.get_pages(file)):
                     if pageNumber == page_no:
                         interpreter.process_page(page)
-                        data.append(retstr.getvalue().split('\n')[:10])
+                        data.append(retstr.getvalue().split('\n')[:20])
                         retstr.truncate(0)
                         retstr.seek(0)
                         lista =  [item.strip() for item in data[0] if len(item)>0]
-                
+                        
                 self.pdfdata = lista
-
+                
             list_fields = {'fecha': '', 'monto':'', 'nombre' : '', 'monto_en_letras': '', 'no_negociable' : '','otros':''}
-
+            print(data[0])
             # sort filds 
             for field in self.pdfdata:
                 if re.findall(r'[Guatemala,]+.[0-3]{1}[0-9]{1}.[de].*.[de].[0-9]{4}', field):
                     list_fields['fecha'] = field
-
-                elif re.findall(r'[0-9][,0-9]*\.[0-9]{2}', field):
+                #elif re.findall(r'[0-9][,0-9]*\.[0-9]{2}', field):
+                elif re.findall(r'[0-9],*[0-9]*\.[0-9]{2}', field):
                     list_fields['monto'] = field
-
                 elif re.findall(r'[A-Z ]+[0-9]+\/100', field):
                     list_fields['monto_en_letras'] = field
-            
                     # elif re.findall(r'^PANADEROS*', field) or re.findall(r'^CUDILLERO*', field):
                     # continue
                 elif re.findall(r'[\*]{3}.*.[\*]{3}', field):
@@ -265,6 +265,7 @@ class MainWindow(QMainWindow):
             self.pdfdata = list_fields
             self.formatPDFCheck()
             self.setWindowTitle(f'QtReaderPDF - [{self.file_selected.fileName()}]')
+
         elif self.file_selected == None:
             msgbox = QMessageBox()
             msgbox.information(self, "Información", "Seleccione Primero un Archivo Valido\t", QMessageBox.Ok)
@@ -330,6 +331,7 @@ class MainWindow(QMainWindow):
         self.setting_variables.setValue('Path', path)
         self.dirwork = path
 
+
     @pyqtSlot()
     def preference(self):
         print("print")
@@ -338,7 +340,7 @@ class MainWindow(QMainWindow):
     def menu_exit(self):
         self.closeEvent(self.event)
         qApp.quit
-       
+
 
     @pyqtSlot()
     def printDirect(self):
@@ -367,12 +369,25 @@ class MainWindow(QMainWindow):
 
         #self.setting_variables.setValue('Path', QStandardPaths.writableLocation(QStandardPaths.HomeLocation))
 
+    @pyqtSlot()
+    def configFormat(self):
+        config = configMenu()
+
+
 
 class configMenu(QDialog):
     def __init__(self):
         QDialog.__init__(self)
         dlg = QDialog(self)
-        dlg.setWindowTitle("HELLO!")
+        dlg.setWindowTitle("Configuracion de Fomato de Cheques")
+        dlg.resize(576, 448)
+        hbox = QHBoxLayout()
+        frame = QFrame()
+        frame.setFrameShape(QFrame.StyledPanel)
+        frame.setLineWidth(0.9)
+        hbox.addWidget(frame)
+        
+        self.setLayout(hbox)
         dlg.exec()
 
 
