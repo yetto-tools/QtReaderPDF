@@ -250,7 +250,7 @@ class MainWindow(QMainWindow):
                     list_fields['fecha'] = field
                 # elif re.findall(r'[0-9][,0-9]*\.[0-9]{2}', field):
                 # elif re.findall(r'.*[0-9]*\.[0-9]*[0-9]+', field):
-                elif re.findall(r'[0-9],*[0-9]*\.[0-9]{2}', field):
+                elif re.findall(r'.*[0-9]*\.[0-9]*[0-9]+', field):
                     list_fields['monto'] = field
                 elif re.findall(r'[A-Z ]+[0-9]+\/100', field):
                     list_fields['monto_en_letras'] = field
