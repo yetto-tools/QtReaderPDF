@@ -220,6 +220,7 @@ class MainWindow(QMainWindow):
             self.webView.setUrl(QUrl(f"file:///{self.file_selected.absoluteFilePath()}"))
 
 
+
     @pyqtSlot()
     def convertFormat(self):
         if not self.file_selected == None:
