@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWebEngineWidgets import *
-from PyQt5.QtPrintSupport import QPrintDialog, QPrinter, QPrintPreviewDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QTreeView, QFileSystemModel, QWidget, QAction, QStyle, QMenu, QToolBar, QMessageBox, QDialog, QFileDialog, qApp, QFrame, QProgressDialog, QProgressBar
+from PyQt5.QtCore import pyqtSlot, QObject,  QSettings, Qt, QDir, QUrl, QStandardPaths, QFileInfo, QEventLoop, QPointF
+from PyQt5.QtGui import QIcon, QColor, QPainter
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
+from PyQt5.QtPrintSupport import QPrintDialog, QPrinter, QPrintPreviewDialog 
 import sys
 
 
@@ -218,6 +218,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f'QtReaderPDF - [{path}]')
         if not self.file_selected.isDir():
             self.webView.setUrl(QUrl(f"file:///{self.file_selected.absoluteFilePath()}"))
+
 
     @pyqtSlot()
     def convertFormat(self):
