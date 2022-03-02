@@ -249,8 +249,7 @@ class MainWindow(QMainWindow):
                 if re.findall(r'[Guatemala,]+.[0-3]{1}[0-9]{1}.[de].*.[de].[0-9]{4}', field):
                     list_fields['fecha'] = field
                 # elif re.findall(r'[0-9][,0-9]*\.[0-9]{2}', field):
-                # elif re.findall(r'.*[0-9]*\.[0-9]*[0-9]+', field):
-                elif re.findall(r'.*[0-9]*\.[0-9]*[0-9]+', field):
+                elif re.findall(r'[0-9].*,*\.[0-9]*[0-9]+', field):
                     list_fields['monto'] = field
                 elif re.findall(r'[A-Z ]+[0-9]+\/100', field):
                     list_fields['monto_en_letras'] = field
