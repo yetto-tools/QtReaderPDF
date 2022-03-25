@@ -1,4 +1,8 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QTreeView, QFileSystemModel, QWidget, QAction, QStyle, QMenu, QToolBar, QMessageBox, QDialog, QFileDialog, qApp, QFrame, QProgressDialog, QProgressBar
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QHBoxLayout, QTreeView, 
+QFileSystemModel, QWidget, QAction, QStyle, QMenu, QToolBar, 
+QMessageBox, QDialog, QFileDialog, 
+qApp, QFrame, QProgressDialog, QProgressBar, QInputDialog,QLineEdit
+)
 from PyQt5.QtCore import pyqtSlot, QObject,  QSettings, Qt, QDir, QUrl, QStandardPaths, QFileInfo, QEventLoop, QPointF
 from PyQt5.QtGui import QIcon, QColor, QPainter
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
@@ -113,8 +117,9 @@ class MainWindow(QMainWindow):
         self.exitAction = QAction(QIcon(QApplication.style().standardIcon(QStyle.SP_DialogCloseButton)),"&Salir...", self)
 
         #About Menu
-        self.aboutAction = QAction("&Acerca de", self)
-
+        self.aboutAction = QAction("&Version", self)
+        self.aboutAction.setShortcut('F1')
+        self.aboutAction.triggered.connect(self.version_dialog)
         # menu bar items
         FileMenu = QMenu("&Achivo", self)
         self.menuBar.addMenu(FileMenu)
@@ -165,6 +170,7 @@ class MainWindow(QMainWindow):
 
         AboutMenu = QMenu("&Acerca", self)
         self.menuBar.addMenu(AboutMenu)
+        AboutMenu.addAction(self.aboutAction)
 
 
         FileMenu.addAction(self.openFileAction)
@@ -218,8 +224,27 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f'QtReaderPDF - [{path}]')
         if not self.file_selected.isDir():
             self.webView.setUrl(QUrl(f"file:///{self.file_selected.absoluteFilePath()}"))
+    
+    # def rename(self, index):
+    #     old = self.dirModel.fileName(index)
+    #     wasReadOnly = self.dirModel.isReadOnly()
+    #     name, ok = QInputDialog.getText(self, "Renombar", "Nuevo Nombre", QLineEdit.Normal, old)
+
+    #     if ok and name and name != old:
+    #         self.dirModel.setData(index, name)
+    #     self.dirModel.setReadOnly(wasReadOnly)
+    
+    def version_dialog(self):
+        
+        msgbox = QMessageBox()
+        msgbox.information(self, "Version: ", "1.4 compilacion: 24/03/2022 \n\ncreado por: Erick Rashón", QMessageBox.Ok)
 
 
+    def keyPressEvent(self, event):
+        """Reimplement Qt method"""
+        if event.key() in (Qt.Key_Enter, Qt.Key_Return):
+            self.on_clicked(self.treeview.currentIndex())
+            self.treeview.update()
 
     @pyqtSlot()
     def convertFormat(self):
@@ -316,7 +341,8 @@ class MainWindow(QMainWindow):
             QStandardPaths.writableLocation(QStandardPaths.DownloadLocation),
             "*.pdf;;CrystalReport*.pdf;;All Files (*)", 
             options=options)
-        if check:           
+
+        if check:
             self.webView.setUrl(QUrl(f'file:///{path}'))
             self.webView.setPage(self.webView.page())
             self.file_selected  = QFileInfo(path)
@@ -488,4 +514,5 @@ if __name__ == "__main__":
     win.show()
 
     sys.exit(app.exec_())
- 
+
+
