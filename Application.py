@@ -270,14 +270,15 @@ class MainWindow(QMainWindow):
                 self.pdfdata = lista
                 
             list_fields = {'fecha': '', 'monto':'', 'nombre' : '', 'monto_en_letras': '', 'no_negociable' : '','otros':''}
-            print(data[0])
+
             # sort filds 
             for field in self.pdfdata:
                 if re.findall(r'[Guatemala,]+.[0-3]{1}[0-9]{1}.[de].*.[de].[0-9]{4}', field):
                     list_fields['fecha'] = field
                 # elif re.findall(r'[0-9][,0-9]*\.[0-9]{2}', field):
                 elif re.findall(r'[0-9].*,*\.[0-9]*[0-9]+', field):
-                    list_fields['monto'] = field
+                    if float(field.replace(',','')) > 0.00 :
+                        list_fields['monto'] = field
                 elif re.findall(r'[A-Z ]+[0-9]+\/100', field):
                     list_fields['monto_en_letras'] = field
                     # elif re.findall(r'^PANADEROS*', field) or re.findall(r'^CUDILLERO*', field):
@@ -317,7 +318,7 @@ class MainWindow(QMainWindow):
             def margin_left():
                 ml = ((h/2)-(h_checkbi/2))
                 return ml
-
+            print(self.pdfdata)
             myCanvas.rotate(90)
             myCanvas.drawString(top()-135*mm, -margin_left()-24.7*mm, self.pdfdata['fecha'])
             myCanvas.drawString(top()-30*mm, -margin_left()-24.7*mm, self.pdfdata['monto'])
