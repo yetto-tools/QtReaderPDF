@@ -120,6 +120,9 @@ class MainWindow(QMainWindow):
         self.aboutAction = QAction("&Version", self)
         self.aboutAction.setShortcut('F1')
         self.aboutAction.triggered.connect(self.version_dialog)
+        self.creatorAction = QAction("Creador", self)
+        self.creatorAction.triggered.connect(self.bycreate)
+
         # menu bar items
         FileMenu = QMenu("&Achivo", self)
         self.menuBar.addMenu(FileMenu)
@@ -171,6 +174,7 @@ class MainWindow(QMainWindow):
         AboutMenu = QMenu("&Acerca", self)
         self.menuBar.addMenu(AboutMenu)
         AboutMenu.addAction(self.aboutAction)
+        AboutMenu.addAction(self.creatorAction)
 
 
         FileMenu.addAction(self.openFileAction)
@@ -235,9 +239,12 @@ class MainWindow(QMainWindow):
     #     self.dirModel.setReadOnly(wasReadOnly)
     
     def version_dialog(self):
-        
         msgbox = QMessageBox()
-        msgbox.information(self, "Version: ", "1.4 compilacion: 24/03/2022 \n\ncreado por: Erick Rashón", QMessageBox.Ok)
+        msgbox.information(self, "Version: ", "v1.4.064 \ncompilacion: 25/03/2022", QMessageBox.Ok)
+
+    def bycreate(self):
+        msgbox = QMessageBox()
+        msgbox.information(self, "creado por:", "Erick Rashón\ncorreo: ergonzalez209@gmail.com", QMessageBox.Ok)
 
 
     def keyPressEvent(self, event):
